@@ -14,6 +14,12 @@ def haveSpecialCharacter(word):
             return True
     return False
 
+def haveUpperCase(word):
+    for letter in word:
+        if(re.match('[A-Z]', letter)):
+            return True
+    return False
+
 
 def dicoAttack(password):
     filepath = 'dictionnary.txt'
@@ -25,13 +31,14 @@ def dicoAttack(password):
             line = fp.readline()
     return False
 
-
 def checkingPass(password):
-    # Mot de passe supérieur ou égale à 6 caractères
-    if(len(password) >= 6):
+
+    # Mot de passe supérieur ou égale à 7 caractères
+    if(len(password) >= 7):
+    
         # Caractère Spécial First
         if (haveSpecialCharacter(password)):
-            if(re.match('[A-Z]+', password)):
+            if(haveUpperCase(password)):
                 if(haveDigit(password)):
                     if (len(password) > 8):
                         comment = ""
@@ -40,41 +47,49 @@ def checkingPass(password):
                         comment = "Bon mot de passe"
                         level = "GOOD"
                 else:
-                    comment = "Le mot de passe manque d'un chiffre"
+                    comment = " manque d'un chiffre"
                     level = "MEDIUM"
             else:
                 if(haveDigit(password)):
-                    comment = "Le mot de passe manque d'une majuscule"
+                    comment = " manque d'une majuscule"
                     level = "MEDIUM"
                 else:
-                    comment = "Le mot de passe manque d'un chiffre et d'une majuscule"
+                    comment = " manque d'un chiffre et d'une majuscule"
                     level = "BAD"
                     # Majuscule First
-        elif(re.match('[A-Z]+', password)):
+        elif(haveUpperCase(password)):
             if(haveDigit(password)):
-                comment = "Le mot de passe manque d'un caractère spécial"
+                comment = " manque d'un caractère spécial"
                 level = "MEDIUM"
             else:
-                comment = "Le mot de passe manque d'un chiffre et d'un caractère spécial"
+                comment = " manque d'un chiffre et d'un caractère spécial"
                 level = "BAD"
 
         # Chiffre first
         else:
             if(haveDigit(password)):
-                comment = "Le mot de passe manque d'une majuscule et d'un caractère spécial"
+                comment = " manque d'une majuscule et d'un caractère spécial"
                 level = "BAD"
             else:
-                comment = "Le mot de passe manque d'une majuscule, d'un caractère spécial et d'un chiffre"
+                comment = " manque d'une majuscule, d'un caractère spécial et d'un chiffre"
                 level = "VERY BAD"
 
-    # Inférieur à 6 caractères
+    # Inférieur à 7 caractères
     else:
-        comment = "Le mot de passe doit faire minimum 6 caractères et non " + \
-            str(len(password))+"caractères !"
+        comment = " doit faire minimum 7 caractères et non " + \
+            str(len(password))+" caractères !"
         level = "VERY BAD"
 
     if(dicoAttack(password)):
-        comment = "Le mot de passe est déjà connu"
+        comment = " est déjà connu"
         level = "VERY BAD"
+    
+    #On évite la répitition
+    if(level in ['VERY BAD','BAD','MEDIUM']):
+        
+        comment = "Le mot de passe"+comment
+    
+    if level!='PERFECT':
+        comment = " : "+comment
 
     return level, comment

@@ -16,7 +16,8 @@ def createDatabase(connexion, cursor):
         id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
         username TEXT,
         mail TEXT,
-        password TEXT
+        password TEXT,
+        levelPassword TEXT DEFAULT NULL
     )''')
 
     users = [
@@ -32,7 +33,32 @@ def createDatabase(connexion, cursor):
 
     connexion.commit()
 
+def insertDatabase(connexion,cursor,users):
+    cursor.executemany(
+        "INSERT INTO user(username, mail, password) VALUES(?, ?, ?) ", users)
+    
+    try:
+        connexion.commit()
+    except:
+        return False
+    
+    return True
+
+def updateLevelPass(connexion,cursor,users):
+    cursor.executemany("UPDATE user SET levelPassword = (?) WHERE username = (?)", users)
+
+    connexion.commit()
 
 def userList(cursor):
-    cursor.execute('''SELECT username,password FROM user''')
+    cursor.execute('''SELECT username,password,mail,levelPassword FROM user''')
     return cursor.fetchone()
+
+def userInfo(cursor,username='',level=''):
+
+    cursor.execute('''SELECT username,password,mail,levelPassword FROM user WHERE username LIKE ? and levelPassword LIKE ? ''', (username+'%',level+'%'))
+    return cursor.fetchone()
+
+#A Corriger
+def requeteur(cursor,requete):
+    cursor.execute(requete)
+    return cursor.fetchall()
