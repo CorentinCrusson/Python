@@ -14,6 +14,7 @@ def haveSpecialCharacter(word):
             return True
     return False
 
+
 def haveUpperCase(word):
     for letter in word:
         if(re.match('[A-Z]', letter)):
@@ -22,25 +23,26 @@ def haveUpperCase(word):
 
 
 def dicoAttack(password):
+    i = 0
     filepath = 'dictionnary.txt'
     with open(filepath) as fp:
         line = fp.readline()
-        while line:
-            if(line == password):
-                return True
-            line = fp.readline()
+        if(line == password+"\n"):
+            return True
+        line = fp.readline()
+    
     return False
 
 def checkingPass(password):
 
-    # Mot de passe supérieur ou égale à 7 caractères
-    if(len(password) >= 7):
-    
+    # Mot de passe supérieur ou égale à 8 caractères
+    if(len(password) >= 8):
+
         # Caractère Spécial First
         if (haveSpecialCharacter(password)):
             if(haveUpperCase(password)):
                 if(haveDigit(password)):
-                    if (len(password) > 8):
+                    if (len(password) > 10):
                         comment = ""
                         level = "PERFECT"
                     else:
@@ -76,20 +78,20 @@ def checkingPass(password):
 
     # Inférieur à 7 caractères
     else:
-        comment = " doit faire minimum 7 caractères et non " + \
+        comment = " doit faire minimum 8 caractères et non " + \
             str(len(password))+" caractères !"
         level = "VERY BAD"
 
     if(dicoAttack(password)):
         comment = " est déjà connu"
         level = "VERY BAD"
-    
-    #On évite la répitition
-    if(level in ['VERY BAD','BAD','MEDIUM']):
-        
+
+    # On évite la répitition
+    if(level in ['VERY BAD', 'BAD', 'MEDIUM']):
+
         comment = "Le mot de passe"+comment
-    
-    if level!='PERFECT':
+
+    if level != 'PERFECT':
         comment = " : "+comment
 
     return level, comment
